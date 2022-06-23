@@ -18,10 +18,10 @@ public class Configuration extends KeycloakWebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
 
-        KeycloakAuthenticationProvider keycloakAuthenticationProvider
-                = keycloakAuthenticationProvider();
-        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(
-                new SimpleAuthorityMapper());
+        KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
+
+        keycloakAuthenticationProvider.setGrantedAuthoritiesMapper(new SimpleAuthorityMapper());
+
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
 
@@ -36,9 +36,10 @@ public class Configuration extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .antMatchers("/*")
+                .mvcMatchers("/").permitAll()
+                .mvcMatchers("/get/all", "get/byplace/**", "/add", "/update", "/delete")
                 .hasRole("admin")
                 .anyRequest()
-                .permitAll();
+                .authenticated();
     }
 }

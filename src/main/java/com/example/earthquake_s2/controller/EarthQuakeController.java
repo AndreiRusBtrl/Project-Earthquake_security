@@ -8,14 +8,18 @@ import reactor.core.publisher.Mono;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-@CrossOrigin("*")
 @RestController
 public class EarthQuakeController {
 
-        private EarthQuakeService service;
+        private final EarthQuakeService service;
 
     public EarthQuakeController(EarthQuakeService service) {
         this.service = service;
+    }
+
+    @GetMapping("/")
+    public String home(){
+        return "Home Page";
     }
 
     @GetMapping("/logout")
@@ -24,23 +28,22 @@ public class EarthQuakeController {
         return "logout";
     }
 
-    @GetMapping("/getAll")
+    @GetMapping("/get/all")
     public EarthQuake[] getAll (){
         return service.getEarthQuake();
     }
 
-    @GetMapping("/getrestricted")
+    @GetMapping("/get/restricted")
     public EarthQuake[] getRestricted (){
         return service.getEarthQuakesLessthan8();
     }
 
-
-    @GetMapping("/getByPlace/{place}")
+    @GetMapping("/get/byplace/{place}")
     public EarthQuake[] getByPlace (@PathVariable String place){
         return service.getEarthQuakesByPlace(place);
     }
 
-    @GetMapping("/getRestrictedByPlace/{place}")
+    @GetMapping("/get/restrictedbyplace/{place}")
     public EarthQuake[] getRestrictedByPlace (@PathVariable String place){
         return service.getEarthQuakesByPlaceAndMagnitudeLessThan8(place);
     }
