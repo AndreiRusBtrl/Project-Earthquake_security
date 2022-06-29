@@ -2,6 +2,7 @@ package com.example.earthquake_s2.service;
 
 import com.example.earthquake_s2.data.EarthQuake;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -56,20 +57,43 @@ public class EarthQuakeService {
                 .bodyToMono(EarthQuake.class);
     }
 
-    public Mono<EarthQuake> updateEarthQuake(EarthQuake earthQuake) {
+    public Mono<EarthQuake> updateEarthQuake(EarthQuake earthQuake, int id) {
         return webClient
                 .put()
-                .uri("/update")
+                .uri("/update/"+ id)
                 .body(Mono.just(earthQuake), EarthQuake.class)
                 .retrieve()
                 .bodyToMono(EarthQuake.class);
     }
 
-    public Mono<EarthQuake> deleteEarthQuake() {
+    public Mono<EarthQuake> deleteEarthQuake(int id) {
         return webClient
                 .delete()
-                .uri("/delete")
+                .uri("/delete/"+ id)
                 .retrieve()
                 .bodyToMono(EarthQuake.class);
+    }
+
+    public EarthQuake createEarthQuake(String occuredOn,
+                                       double latitude,
+                                       double longitude,
+                                       float depth,
+                                       float magnitude,
+                                       String calculationMethod,
+                                       String networkId,
+                                       String place,
+                                       String cause){
+        EarthQuake earthQuake = new EarthQuake();
+        earthQuake.setOccurredOn(occuredOn);
+        earthQuake.setLatitude(latitude);
+        earthQuake.setLongitude(longitude);
+        earthQuake.setDepth(depth);
+        earthQuake.setMagnitude(magnitude);
+        earthQuake.setCalculationMethod(calculationMethod);
+        earthQuake.setNetworkId(networkId);
+        earthQuake.setPlace(place);
+        earthQuake.setCause(cause);
+
+        return earthQuake;
     }
 }

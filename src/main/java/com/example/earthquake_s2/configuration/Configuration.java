@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @KeycloakConfiguration
 public class Configuration extends KeycloakWebSecurityConfigurerAdapter {
@@ -36,10 +37,21 @@ public class Configuration extends KeycloakWebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
         http.authorizeRequests()
-                .mvcMatchers("/").permitAll()
-                .mvcMatchers("/get/all", "get/byplace/**", "/add", "/update", "/delete")
+                .mvcMatchers("/get/all")
                 .hasRole("admin")
+                .mvcMatchers("/get/restricted")
+                .hasRole("user")
                 .anyRequest()
-                .authenticated();
+                .authenticated()
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .and()
+                .csrf()
+                .disable();
+
     }
 }
